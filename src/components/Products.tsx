@@ -10,13 +10,12 @@ type User = {
 
 const UserList = () => {
   const [users, setUsers] = useState<User[]>([]);
-
+  
   const fetchUsers = async () => {
       const response = await axios.get<User[]>("https://fakestoreapi.com/products");
       setUsers(response.data);
       console.log(response.data)
     };
-
   useEffect(() => {
     fetchUsers();
   }, []);
