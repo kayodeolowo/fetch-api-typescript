@@ -1,58 +1,39 @@
-import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-
-interface ApiData {
-   
+type User = {
   id: number;
-  name: string;
-  email: string;
+  title: string;
   price: number;
-  
-}
+  image: string
+};
 
-async function fetchData(): Promise<ApiData> {
-  const response = await axios.get('https://fakestoreapi.com/products');
-  return response.data;
-}
+const UserList = () => {
+  const [users, setUsers] = useState<User[]>([]);
 
-
-function Products() {
-  const [data, setData] = useState<ApiData | null>(null);
+  const fetchUsers = async () => {
+      const response = await axios.get<User[]>("https://fakestoreapi.com/products");
+      setUsers(response.data);
+      console.log(response.data)
+    };
 
   useEffect(() => {
-    async function getData() {
-      const apiData = await fetchData();
-      setData(apiData);
-      console.log(apiData)
-    }
-
-    getData();
+    fetchUsers();
   }, []);
 
-  if (!data) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div>
-     {data.map(item=>(
-          <div key={item.id}> 
-              <h1> {item.price} </h1>
-            </div>
-          
-        ))}
+    <div className="container mx-auto">
+      {users.map((user) => (
+        <div key={user.id} className="lg:grid lg:grid-cols-4">
+          <div className="border-2 w-40 mb-10 mx-auto "> 
+            <img className="h-20 w-20" src={user.image} />
+            <p className="font-semibold"> {user.price} </p>
+            <h1 className=" lg:w-1/2"> {user.title} </h1>
+          </div>
+        </div>
+      ))}
     </div>
   );
+};
 
-}
-
-
-export default Products;
-
-
-
-
-
-
-
+export default UserList;
